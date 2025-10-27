@@ -1,0 +1,387 @@
+Entendido. He analizado la discrepancia entre el `Roadmap OAPCE Multitrans Adaptado.md` y la `PROPUESTA COMERCIAL - Tablero de control Grupo OM.docx`.
+
+El roadmap técnico original no estaba estrictamente alineado con los módulos definidos en la propuesta comercial.
+
+  * [cite\_start]**Propuesta Comercial (CORE) [cite: 10][cite\_start]:** Define los módulos "Dirección General" [cite: 11][cite\_start], "Administración y Finanzas" [cite: 12][cite\_start], y "Comercial"[cite: 13].
+  * [cite\_start]**Propuesta Comercial (ESPECIALIZADOS) [cite: 14][cite\_start]:** Define "Aduana" [cite: 15][cite\_start], "Outsourcing" [cite: 17][cite\_start], "Logística" [cite: 19][cite\_start], y "RRHH"[cite: 21].
+  * **Roadmap MD (Original):** En su FASE 2 (MÓDULOS CORE) listaba "Módulo Aduana" y "Módulo Comercial".
+
+**El error era doble:**
+
+1.  [cite\_start]El roadmap incluía "Aduana" como CORE, cuando la propuesta lo define como ESPECIALIZADO[cite: 15].
+2.  [cite\_start]El roadmap omitía los módulos CORE "Dirección General" y "Administración y Finanzas"[cite: 11, 12].
+
+A continuación, presento el contenido actualizado del archivo `Roadmap OAPCE Multitrans Adaptado.md`, ajustando las fases de desarrollo para que coincidan estrictamente con los módulos y fases de la propuesta comercial.
+
+-----
+
+# Desarrollo Sistema OAPCE Multitrans
+
+> **Importante**: Este desarrollo sigue estrictamente las reglas y estructura definidas en `agents.md` y los módulos definidos en la `PROPUESTA COMERCIAL - Tablero de control Grupo OM.docx`.
+
+## 1\. CONFIGURACIÓN INICIAL DEL PROYECTO
+
+### Requisitos Previos
+
+  - Node.js ≥ 18
+  - MySQL 8.0
+  - Docker y Docker Compose
+  - Git
+
+### 1.1 Estructura Base
+
+```bash
+# Crear estructura inicial del proyecto
+mkdir -p oapce-multitrans/{backend/{src/{config,controllers,models,routes,utils,middlewares},tests},frontend/{src/{components,hooks,services,utils},tests},infra,docs}
+cd oapce-multitrans
+```
+
+### 1.2 Inicialización Backend
+
+```bash
+cd backend
+npm init -y
+npm install express mysql2 sequelize dotenv cors helmet winston jsonwebtoken bcryptjs
+npm install --save-dev jest supertest @types/jest eslint prettier nodemon
+```
+
+#### 1.2.1 Configuración MySQL (`backend/src/config/database.js`)
+
+```javascript
+const { Sequelize } = require('sequelize');
+require('dotenv').config();
+
+const sequelize = new Sequelize({
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  dialect: 'mysql',
+  logging: (msg) => logger.debug(msg),
+  pool: {
+    max: 10,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
+});
+
+module.exports = sequelize;
+```
+
+#### 1.2.2 Configuración Logger (`backend/src/utils/logger.js`)
+
+```javascript
+const winston = require('winston');
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'logs/combined.log' })
+  ]
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(new winston.transports.Console({
+    format: winston.format.simple()
+  }));
+}
+
+module.exports = logger;
+```
+
+### 1.3 Inicialización Frontend
+
+```bash
+cd ../frontend
+npm create vite@latest . -- --template react-ts
+npm install @mantine/core @mantine/hooks @mantine/form @mantine/dates dayjs zustand axios
+npm install --save-dev electron electron-builder concurrently wait-on
+```
+
+#### 1.3.1 Configuración Electron (`frontend/electron/main.js`)
+
+```javascript
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
+
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  if (process.env.NODE_ENV === 'development') {
+    win.loadURL('http://localhost:5173');
+    win.webContents.openDevTools();
+  } else {
+    win.loadFile('dist/index.html');
+  }
+}
+
+app.whenReady().then(createWindow);
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+```
+
+## 2\. DESARROLLO DE FUNCIONALIDADES Y MÓDULOS
+
+### 2.1 Modelos Base (`backend/src/models/`)
+
+#### Usuario.js
+
+```javascript
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+const bcrypt = require('bcryptjs');
+
+const Usuario = sequelize.define('Usuario', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  nombre: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+      len: [2, 100]
+    }
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true
+    }
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  rol: {
+    type: DataTypes.ENUM('admin', 'operador', 'cliente'),
+    defaultValue: 'operador'
+  }
+}, {
+  hooks: {
+    beforeSave: async (usuario) => {
+      if (usuario.changed('password')) {
+        usuario.password = await bcrypt.hash(usuario.password, 10);
+      }
+    }
+  }
+});
+
+Usuario.prototype.validarPassword = async function(password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+module.exports = Usuario;
+```
+
+### 2.2 Controladores (`backend/src/controllers/`)
+
+#### usuarioController.js
+
+```javascript
+const Usuario = require('../models/Usuario');
+const { validationResult } = require('express-validator');
+const logger = require('../utils/logger');
+
+exports.crearUsuario = async (req, res) => {
+  try {
+    // Validación de entrada
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      logger.warn('Validación fallida en crearUsuario:', errors.array());
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Datos de entrada inválidos',
+        errors: errors.array() 
+      });
+    }
+
+    const { nombre, email, password, rol } = req.body;
+
+    // Verificar si ya existe el email
+    const usuarioExistente = await Usuario.findOne({ where: { email } });
+    if (usuarioExistente) {
+      logger.warn(`Intento de crear usuario con email duplicado: ${email}`);
+      return res.status(400).json({
+        success: false,
+        message: 'El email ya está registrado'
+      });
+    }
+
+    // Crear usuario
+    const usuario = await Usuario.create({
+      nombre,
+      email,
+      password,
+      rol
+    });
+
+    logger.info(`Usuario creado exitosamente: ${usuario.id}`);
+    
+    // No devolver el password en la respuesta
+    const { password: _, ...usuarioSinPassword } = usuario.toJSON();
+    
+    return res.status(201).json({
+      success: true,
+      data: usuarioSinPassword
+    });
+
+  } catch (error) {
+    logger.error('Error en crearUsuario:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error al crear usuario',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+```
+
+## 3\. PLAN DE DESARROLLO (SPRINTS)
+
+### ⚙️ FASE 1: SETUP Y AUTENTICACIÓN (Meses 1-2)
+
+#### Sprint 1: Configuración
+
+  - Estructura de carpetas y proyecto
+  - Setup Docker (MySQL, Backend, Frontend)
+  - Configuración inicial Node.js + Express
+  - Conexión y modelos base Sequelize (MySQL)
+  - Setup Logger (Winston)
+
+#### Sprint 2: Backend y Frontend Base
+
+  - Implementación `Usuario.js` (Modelo y Controller)
+  - Endpoints de Autenticación (JWT) y creación de usuarios
+  - Middlewares de seguridad y validación
+  - Setup React + Electron + Vite
+  - Pantalla de Login y layout principal (Mantine)
+  - Tests unitarios backend (Auth) \>85% coverage
+
+### 📊 FASE 2: MÓDULOS CORE (Meses 3-5)
+
+[cite\_start]*(Basado en FASE 1 de la Propuesta Comercial [cite: 10])*
+
+#### [cite\_start]Sprint 3-4: Módulo Comercial [cite: 13]
+
+  - Models y controllers (Clientes, Vendedores, Funnel)
+  - UI para gestión de cartera y performance
+  - Integración completa frontend-backend
+  - Tests unitarios y de integración
+
+#### [cite\_start]Sprint 5-6: Módulo Administración y Finanzas [cite: 12]
+
+  - Models y controllers (Facturación, Cobranzas, Cash Flow)
+  - UI para control de cuentas y cheques
+  - Integración completa frontend-backend
+  - Tests unitarios y de integración
+
+#### [cite\_start]Sprint 7: Tablero de Dirección General [cite: 11]
+
+  - Endpoints de agregación de KPIs (Finanzas, Comercial)
+  - UI Dashboard unificado
+  - Tests end-to-end flujos críticos
+
+### 📦 FASE 3: MÓDULOS ESPECIALIZADOS (Meses 6-8)
+
+[cite\_start]*(Basado en FASE 2 de la Propuesta Comercial [cite: 14])*
+
+#### [cite\_start]Sprint 8: Módulo Aduana [cite: 15]
+
+  - Models y controllers (Operaciones, Tiempos, Canales)
+  - UI para tracking de operaciones
+  - Tests unitarios y de integración
+
+#### [cite\_start]Sprint 9: Módulo Outsourcing [cite: 17]
+
+  - Models y controllers (Clientes dedicados, SLAs)
+  - UI para dashboards por cliente
+  - Tests unitarios y de integración
+
+#### [cite\_start]Sprint 10: Módulo Logística [cite: 19]
+
+  - Models y controllers (Flota, Viajes, Costos)
+  - UI para control de flota nacional e internacional
+  - Tests unitarios y de integración
+
+#### [cite\_start]Sprint 11: Módulo RRHH [cite: 21]
+
+  - Models y controllers (Headcount, Ausentismo)
+  - UI para gestión de personal
+  - Tests unitarios y de integración
+
+### 🤖 FASE 4: ANALÍTICA E INTEGRACIÓN (Mes 9)
+
+#### Sprint 12: ETL y Data Warehouse
+
+  - Setup ClickHouse para analítica
+  - Implementación ETL (MySQL -\> ClickHouse)
+  - Tests de integración de datos
+
+#### Sprint 13: Dashboards BI
+
+  - Implementación visualizaciones (BI)
+  - Integración (opcional) con Kafka para real-time
+  - Tests de rendimiento y carga
+
+### 💻 FASE 5: OPTIMIZACIÓN Y CIERRE (Mes 10)
+
+#### Sprint 14: Performance y UX
+
+  - Optimización queries MySQL y ClickHouse
+  - Mejoras UX/UI basadas en feedback
+  - Testing de rendimiento global
+  - Documentación final y guías de usuario
+
+## CRITERIOS DE CALIDAD
+
+### Backend
+
+  - API inicia sin errores
+  - Conexión MySQL estable y testeada
+  - Endpoints con códigos HTTP correctos
+  - Validaciones robustas de datos
+  - Logs claros en operaciones críticas
+
+### Frontend
+
+  - Build sin errores
+  - Responsive desktop/móvil
+  - Manejo visible estados carga/error
+  - Formularios validados
+  - Tests UI completos
+
+### Integración
+
+  - Cambios DB reflejados en UI
+  - Variables entorno sincronizadas
+  - Tests funcionales completos
+  - Documentación actualizada
+
+### Testing
+
+  - Coverage backend \>85%
+  - Tests UI flujos críticos
+  - Tests integración APIs
+  - Tests rendimiento
