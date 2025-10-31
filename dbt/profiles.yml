@@ -1,0 +1,21 @@
+oapce_bi:
+  target: dev
+  outputs:
+    dev:
+      type: sqlite
+      threads: 1
+      database: ../../../../oapce.db
+      schema: main
+      schemas_and_paths:
+        staging: main
+        marts: main
+      schema_directory: ../../../../</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>

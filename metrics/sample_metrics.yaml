@@ -1,0 +1,56 @@
+metrics:
+- aggregation: sum
+  category: ventas
+  data_type: currency
+  description: Suma total de todos los ingresos facturados
+  display_name: Ingresos Totales
+  formula: SUM(facturas.monto_total) WHERE estado = "Pagada"
+  id: revenue_total
+  name: Ingresos Totales
+  unit: CLP
+- aggregation: ratio
+  category: marketing
+  data_type: percentage
+  depends_on:
+  - clientes_activos
+  description: Porcentaje de prospectos que se convierten en clientes
+  display_name: Tasa de Conversión de Clientes
+  formula: (COUNT(clientes WHERE estado_funnel = "Ganado") / COUNT(clientes WHERE
+    estado_funnel IN ("Contactado", "Calificado", "Propuesta", "Negociación"))) *
+    100
+  id: conversion_rate
+  name: Tasa de Conversión
+  unit: '%'
+- aggregation: avg
+  category: ventas
+  data_type: currency
+  description: Valor promedio de ingresos por cliente a lo largo de su vida
+  display_name: CLV - Valor de Vida del Cliente
+  formula: AVG(clientes.valor_estimado) WHERE active = true
+  id: client_lifetime_value
+  name: Valor de Vida del Cliente
+  unit: CLP
+- aggregation: avg
+  category: servicio
+  data_type: number
+  description: Puntuación promedio de satisfacción en encuestas
+  display_name: CSAT - Satisfacción del Cliente
+  formula: AVG(encuestas.score) WHERE tipo = "satisfaccion"
+  id: customer_satisfaction
+  name: Satisfacción del Cliente
+  range_max: 5
+  range_min: 1
+  unit: puntos
+- aggregation: ratio
+  category: retencion
+  data_type: percentage
+  depends_on:
+  - clientes_activos
+  description: Porcentaje de clientes perdidos en los últimos 30 días
+  display_name: Churn Rate - Tasa de Abandono
+  formula: (COUNT(clientes WHERE estado_funnel = "Perdido" AND updated_at >= DATE_SUB(NOW(),
+    30)) / COUNT(clientes_activos)) * 100
+  id: churn_rate
+  name: Tasa de Abandono
+  unit: '%'
+version: '1.0'

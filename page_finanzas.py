@@ -26,7 +26,12 @@ def show_finance_dashboard():
         
         with tab4:
             show_accounts_receivable(db)
-    
+
+        st.markdown("---")
+
+        # AGENTES INTELIGENTES PARA FINANZAS - AL NIVEL DEL MÓDULO COMPLETO
+        show_finance_ai_agents()
+
     finally:
         db.close()
 
@@ -360,6 +365,70 @@ def show_accounts_receivable(db):
     
     if not df_cuentas.empty:
         st.dataframe(df_cuentas, use_container_width=True, hide_index=True)
+
+def show_finance_ai_agents():
+    """Agentes IA especializados para el módulo financiero"""
+    st.markdown("## 🤖 **Agentes IA para Control Financiero**")
+    st.markdown("**Herramientas inteligentes específicamente para finanzas y flujo de caja**")
+
+    with st.expander("🔮 PME (Forecasting Financiero) - Predicción de Flujo de Caja", expanded=False):
+        st.markdown("**¿Qué hace?** Predice ingresos, gastos y situación financiera futura")
+        st.markdown("**Beneficio:** Decisiones financieras basadas en proyecciones exactas")
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.markdown("**Casos de uso principales:**")
+            st.markdown("- Predicción flujo de caja en 6-12 meses")
+            st.markdown("- Budgeting automático de ingresos/gastos")
+            st.markdown("- Alertas de situaciones financieras críticas")
+        with col2:
+            if st.button("🚀 Ejecutar PME - Cash Flow Forecasting", key="finance_pme_cashflow_forecast", use_container_width=True):
+                from agents_ui import show_predictive_models_page
+                st.info("Abierto en nueva sección de Agentes IA")
+
+    with st.expander("🔄 DPO (Consolidación Contable) - ETL Financiero", expanded=False):
+        st.markdown("**¿Qué hace?** Integra automáticamente datos financieros de múltiples fuentes")
+        st.markdown("**Beneficio:** Consolidación automática de estados financieros sin errores")
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.markdown("**Casos de uso principales:**")
+            st.markdown("- Estados financieros actualizados automáticamente")
+            st.markdown("- Eliminación de delay en reconciliations")
+            st.markdown("- Integración de múltiples bases contables")
+        with col2:
+            if st.button("🚀 Ejecutar DPO - Data Consolidation", key="finance_dpo_consolidation", use_container_width=True):
+                from agents_ui import show_data_pipeline_page
+                st.info("Abierto en nueva sección de Agentes IA")
+
+    with st.expander("🚨 AD (Detección Fraudulenta) - Alertas Financieras", expanded=False):
+        st.markdown("**¿Qué hace?** Detecta automáticamente irregularidades financieras y fraudes")
+        st.markdown("**Beneficio:** Prevención de fraudes y cumplimiento financiero automático")
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.markdown("**Casos de uso principales:**")
+            st.markdown("- Detección de transacciones inusuales")
+            st.markdown("- Alertas de irregularidades bancarias")
+            st.markdown("- Compliance financiero automático")
+        with col2:
+            if st.button("🚀 Ejecutar AD - Fraud Detection", key="finance_ad_fraud", use_container_width=True):
+                from agents_ui import show_anomaly_detector_page
+                st.info("Abierto en nueva sección de Agentes IA")
+
+    with st.expander("💡 PA (Optimización Financiera) - Mejora de Ratios", expanded=False):
+        st.markdown("**¿Qué hace?** Recomendaciones para optimizar ratios y cuentas financieras")
+        st.markdown("**Beneficio:** Mejora automática y constante de métricas financieras")
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.markdown("**Casos de uso principales:**")
+            st.markdown("- Optimización de cuentas por cobrar/pagar")
+            st.markdown("- Mejora automática de ratios financieros")
+            st.markdown("- Recomendaciones de inversión financiera")
+        with col2:
+            if st.button("🚀 Ejecutar PA - Financial Optimization", key="finance_pa_optimization", use_container_width=True):
+                from agents_ui import show_prescriptive_advisor_page
+                st.info("Abierto en nueva sección de Agentes IA")
+
+    st.markdown("---")
+    st.info("💡 **Todos estos agentes se ejecutan desde el módulo '🤖 Agentes IA' en el menú lateral. Aquí se muestra su utilidad específica para el control financiero y gestión del cash flow.**")
 
 if __name__ == "__main__":
     show_finance_dashboard()

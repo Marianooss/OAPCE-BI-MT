@@ -1,0 +1,389 @@
+¡Perfecto! A continuación, te proporciono **código base en Streamlit** para cada una de las 10 pantallas principales de tu aplicación **BiOss – Data Driven Decisions**, siguiendo la estructura, estilo y funcionalidad que describiste.
+
+Este código está listo para ejecutarse en un entorno Streamlit multi-página (Streamlit >= 1.12). Solo debes guardar cada archivo en una carpeta llamada `pages/` (según la convención de Streamlit) y el archivo principal (`app.py` o `Home.py`) en la raíz.
+
+> 📌 **Requisitos previos**:  
+> ```bash
+> pip install streamlit pandas plotly
+> ```
+
+---
+
+## 📁 Estructura del proyecto sugerida
+
+```
+biOss_app/
+├── Home.py                  # Dashboard principal
+├── pages/
+│   ├── 1_📊_Catálogo_de_Datos.py
+│   ├── 2_📈_Análisis_Predictivo.py
+│   ├── 3_💡_Recomendaciones.py
+│   ├── 4_📊_BI_Self_Service.py
+│   ├── 5_📘_Centro_de_Métricas.py
+│   ├── 6_🤖_Asistente_Generativo.py
+│   ├── 7_⚠️_Detección_de_Anomalías.py
+│   ├── 8_🔍_Calidad_de_Datos.py
+│   └── 9_📬_Programación_de_Reportes.py
+```
+
+---
+
+## 🏠 `Home.py` – Dashboard Principal
+
+```python
+import streamlit as st
+import plotly.graph_objects as go
+
+# Estilo oscuro coherente con BiOss
+st.set_page_config(page_title="BiOss – Data Driven Decisions", layout="wide", page_icon="🧠")
+
+# CSS personalizado para estilo neón
+st.markdown("""
+<style>
+    :root {
+        --cian: #00F3FF;
+        --magenta: #FF00F7;
+        --bg: #0F0F15;
+        --card-bg: #1E1E28;
+    }
+    .stApp { background-color: var(--bg); color: #E0E0FF; }
+    .metric-card { background-color: var(--card-bg); padding: 1.2rem; border-radius: 8px; margin: 0.5rem 0; }
+    .alert-critical { border-left: 4px solid var(--magenta); }
+    .alert-info { border-left: 4px solid var(--cian); }
+</style>
+""", unsafe_allow_html=True)
+
+st.title("🧠 BiOss – Data Driven Decisions")
+st.markdown("Dashboard principal de inteligencia operativa")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+    st.metric("Calidad de Datos", "92%", "+2% vs mes")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col2:
+    st.markdown('<div class="metric-card alert-critical">', unsafe_allow_html=True)
+    st.metric("Alertas Activas", "3", "↑ 1 crítica")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col3:
+    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+    st.metric("Previsiones Q4", "$1.2M", "±4%")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# Gráfico de tendencia de calidad (simulado)
+st.subheader("Tendencia de Calidad de Datos")
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=list(range(30)), y=[85 + i*0.3 for i in range(30)], mode='lines', line=dict(color="#00F3FF")))
+fig.update_layout(
+    plot_bgcolor="rgba(0,0,0,0)",
+    paper_bgcolor="rgba(0,0,0,0)",
+    font_color="#E0E0FF",
+    xaxis_showgrid=False,
+    yaxis_showgrid=False
+)
+st.plotly_chart(fig, use_container_width=True)
+
+st.subheader("Actividad Reciente")
+st.info("⚠️ Caída del 40% en cobranzas en la región Sur – [Ver detalle](#)")
+st.success("✅ Reporte semanal de ventas generado y enviado")
+```
+
+---
+
+## 📊 `pages/1_📊_Catálogo_de_Datos.py`
+
+```python
+import streamlit as st
+import pandas as pd
+
+st.set_page_config(page_title="Catálogo de Datos", layout="wide")
+
+st.title("📊 Catálogo de Datos (DCM)")
+
+# Simulación de datos
+data = pd.DataFrame({
+    "Nombre": ["ventas_diarias", "clientes", "productos", "campañas"],
+    "Descripción": ["Ventas por día y tienda", "Base maestra de clientes", "Catálogo de productos", "Historial de campañas"],
+    "Propietario": ["Equipo Finanzas", "CRM", "Inventario", "Marketing"],
+    "Última actualización": ["2025-10-30", "2025-10-28", "2025-10-25", "2025-10-20"],
+    "Etiquetas": ["público", "confidencial", "público", "restringido"]
+})
+
+# Filtros
+etiqueta_filtro = st.selectbox("Filtrar por etiqueta", ["Todas", "público", "confidencial", "restringido"])
+if etiqueta_filtro != "Todas":
+    data = data[data["Etiquetas"] == etiqueta_filtro]
+
+# Tabla
+st.dataframe(data, use_container_width=True)
+
+# Vista de detalle (simulada)
+st.subheader("Vista de Detalle")
+st.text_input("Buscar activo", placeholder="Ej: ventas_diarias")
+st.markdown("""
+**ventas_diarias**  
+- Descripción: Ventas por día y tienda  
+- Propietario: Equipo Finanzas  
+- SLA: Actualización diaria antes de las 6 AM  
+- Columnas: fecha, tienda_id, producto_id, monto, unidades  
+- Etiqueta: público ✅
+""")
+```
+
+---
+
+## 📈 `pages/2_📈_Análisis_Predictivo.py`
+
+```python
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+st.set_page_config(page_title="Análisis Predictivo", layout="wide")
+st.title("📈 Análisis Predictivo (PME)")
+
+modelo = st.selectbox("Seleccionar modelo", ["Previsión de Ventas", "Riesgo de Morosidad"])
+
+# Datos simulados
+if modelo == "Previsión de Ventas":
+    df = pd.DataFrame({
+        "Fecha": pd.date_range("2025-07-01", periods=120),
+        "Valor": [100 + i*0.5 + (i%10)*2 for i in range(120)]
+    })
+    df["Tipo"] = ["Histórico"] * 90 + ["Previsión"] * 30
+    fig = px.line(df, x="Fecha", y="Valor", color="Tipo", color_discrete_map={"Histórico": "#555", "Previsión": "#00F3FF"})
+    st.plotly_chart(fig, use_container_width=True)
+    
+    st.metric("Ventas esperadas Q4", "$1.2M", delta="±4%")
+    col1, col2 = st.columns(2)
+    col1.metric("AUC", "0.92")
+    col2.metric("MAPE", "4.1%")
+```
+
+---
+
+## 💡 `pages/3_💡_Recomendaciones.py`
+
+```python
+import streamlit as st
+
+st.set_page_config(page_title="Recomendaciones", layout="wide")
+st.title("💡 Asesor Prescriptivo (PA)")
+
+st.warning("⚠️ **Riesgo alto de morosidad**\n\nCliente ABC: probabilidad del 60%. Se recomienda contactar para negociar plan de pago.", icon="🚨")
+st.button("📞 Contactar cliente", type="primary")
+
+st.info("💡 **Oportunidad de venta cruzada**\n\nCliente XYZ: productos complementarios sugeridos. Impacto esperado: $5,000.", icon="✨")
+st.button("🛒 Ver productos", type="secondary")
+
+st.success("✅ **Campaña optimizada**\n\nROI proyectado aumenta un 18% con ajuste de segmento.", icon="📈")
+```
+
+---
+
+## 📊 `pages/4_📊_BI_Self_Service.py`
+
+```python
+import streamlit as st
+
+st.set_page_config(page_title="BI Self-Service", layout="wide")
+st.title("📊 BI Self-Service (SSBF)")
+
+st.markdown("### Construye y comparte tus propios dashboards")
+
+# Simulación de iframe (reemplaza con URL real de Metabase/Superset)
+st.components.v1.iframe(
+    src="https://demo.metabase.com/public/dashboard/your-dashboard-token",
+    height=600,
+    scrolling=True
+)
+
+st.sidebar.header("Biblioteca de Métricas")
+st.sidebar.markdown("""
+- Tasa de Conversión  
+- CAC  
+- LTV  
+- Margen Bruto  
+- Retención Mensual
+""")
+```
+
+---
+
+## 📘 `pages/5_📘_Centro_de_Métricas.py`
+
+```python
+import streamlit as st
+import pandas as pd
+
+st.set_page_config(page_title="Centro de Métricas", layout="wide")
+st.title("📘 Centro de Métricas (MDH)")
+
+metrics = pd.DataFrame({
+    "Métrica": ["Tasa de Conversión", "LTV", "CAC"],
+    "Fórmula": [
+        "(Oportunidades Cerradas / Oportunidades Creadas) * 100",
+        "Valor promedio de compra × Frecuencia × Tiempo",
+        "Costo total de adquisición / Nuevos clientes"
+    ],
+    "Dimensiones": ["Canal, Región", "Segmento, Cohorte", "Campaña, Canal"]
+})
+
+st.dataframe(metrics, use_container_width=True)
+
+st.subheader("Definición detallada")
+st.markdown("""
+**Tasa de Conversión**  
+Mide la eficiencia del funnel de ventas.  
+- **Fórmula**: `(Oportunidades Cerradas / Oportunidades Creadas) * 100`  
+- **Ejemplo**: 250 cerradas / 1000 creadas = **25%**  
+- **Dashboards relacionados**: [Funnel de Ventas](#)
+""")
+```
+
+---
+
+## 🤖 `pages/6_🤖_Asistente_Generativo.py`
+
+```python
+import streamlit as st
+
+st.set_page_config(page_title="Asistente Generativo", layout="wide")
+st.title("🤖 Asistente de Datos Generativo (GDA)")
+
+# Simulación de historial
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "¡Hola! Pregúntame sobre ventas, clientes o métricas."}
+    ]
+
+for msg in st.session_state.messages:
+    if msg["role"] == "user":
+        st.chat_message("user").write(msg["content"])
+    else:
+        st.chat_message("assistant").write(msg["content"])
+        # Aquí iría un gráfico o tabla simulado
+        if "ventas" in msg["content"].lower():
+            st.line_chart([10, 20, 30, 25, 40])
+
+prompt = st.chat_input("Ej: ¿Ventas por región en Q3?")
+if prompt:
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    st.chat_message("user").write(prompt)
+    
+    # Respuesta simulada
+    response = f"He analizado tus datos. Las ventas en Q3 fueron: Norte $500K, Sur $300K. ¿Quieres ver el gráfico?"
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    st.chat_message("assistant").write(response)
+    st.bar_chart({"Norte": 500, "Sur": 300})
+```
+
+---
+
+## ⚠️ `pages/7_⚠️_Detección_de_Anomalías.py`
+
+```python
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+st.set_page_config(page_title="Detección de Anomalías", layout="wide")
+st.title("⚠️ Detección de Anomalías (AD)")
+
+# Datos simulados
+df = pd.DataFrame({
+    "Fecha": pd.date_range("2025-10-01", periods=30),
+    "Cobranzas": [20000 - (i*200 if i == 25 else 0) for i in range(30)],
+    "Anomalía": [False]*25 + [True] + [False]*4
+})
+
+fig = px.line(df, x="Fecha", y="Cobranzas", markers=True)
+fig.add_scatter(x=df[df["Anomalía"]]["Fecha"], y=df[df["Anomalía"]]["Cobranzas"],
+                mode='markers', marker=dict(color='#FF00F7', size=12), name='Anomalía')
+st.plotly_chart(fig, use_container_width=True)
+
+st.subheader("Alertas")
+st.error("🔴 Caída del 40% en cobranzas en la región Sur (2025-10-26). Valor: $12K vs esperado $20K ±2K.")
+st.selectbox("Estado", ["Abierta", "En revisión", "Resuelta"])
+```
+
+---
+
+## 🔍 `pages/8_🔍_Calidad_de_Datos.py`
+
+```python
+import streamlit as st
+import pandas as pd
+
+st.set_page_config(page_title="Calidad de Datos", layout="wide")
+st.title("🔍 Panel de Control de Calidad de Datos (DQG)")
+
+# Sidebar
+dataset = st.sidebar.selectbox("Seleccionar conjunto de datos", ["ventas", "clientes", "productos"])
+if st.sidebar.button("Ejecutar validaciones", type="primary"):
+    st.sidebar.success("✅ Validaciones completadas")
+
+# Métricas
+col1, col2, col3 = st.columns(3)
+col1.metric("Puntuación General", "92%", "+2%")
+col2.metric("Problemas Críticos", "2", "↓1")
+col3.metric("Datos Validados", "98%")
+
+# Tendencia
+st.subheader("Tendencia de Calidad")
+st.line_chart([88, 89, 90, 91, 92])
+
+# Problemas detectados
+st.subheader("Problemas Detectados")
+problems = pd.DataFrame({
+    "Tipo": ["Valores nulos", "Formato inválido"],
+    "Severidad": ["Crítica", "Alta"],
+    "Descripción": ["Columna 'email' tiene 120 nulos", "Fecha en formato no ISO"],
+    "Filas afectadas": [120, 45]
+})
+st.dataframe(problems, use_container_width=True)
+```
+
+---
+
+## 📬 `pages/9_📬_Programación_de_Reportes.py`
+
+```python
+import streamlit as st
+import pandas as pd
+
+st.set_page_config(page_title="Programación de Reportes", layout="wide")
+st.title("📬 Programación de Reportes (ARD)")
+
+# Formulario
+with st.form("nuevo_reporte"):
+    nombre = st.text_input("Nombre del reporte")
+    frecuencia = st.selectbox("Frecuencia", ["Diaria", "Semanal", "Mensual"])
+    formato = st.radio("Formato", ["PDF", "Excel", "Enlace"])
+    destinatarios = st.text_input("Destinatarios (emails separados por coma)")
+    submitted = st.form_submit_button("Guardar reporte")
+    if submitted:
+        st.success(f"✅ Reporte '{nombre}' programado ({frecuencia})")
+
+# Lista de reportes
+st.subheader("Reportes Programados")
+reportes = pd.DataFrame({
+    "Nombre": ["Ventas Semanal", "Calidad de Datos"],
+    "Frecuencia": ["Semanal", "Diaria"],
+    "Última ejecución": ["2025-10-28", "2025-10-30"],
+    "Estado": ["Activo", "Activo"]
+})
+st.dataframe(reportes, use_container_width=True)
+```
+
+---
+
+✅ **Listo para usar**:  
+- Ejecuta con `streamlit run Home.py`
+- Navega entre páginas usando el menú lateral automático de Streamlit
+- Personaliza colores, datos y lógica según tu backend real
+
+¿Quieres que empaquete esto en un repositorio ZIP o que agregue autenticación básica, persistencia o conexión a una API?

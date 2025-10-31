@@ -1,6 +1,73 @@
 # OAPCE Multitrans - Sistema de Control y Gestión
 
-## Overview
+## 🚀 INTEGRACIÓN CON ONVIO (THOMSON REUTERS)
+
+**¡Perfecto para empresas chilenas que usan Onvio!**
+
+### ✅ Integración Automática con Onvio
+- **Datos en tiempo real** desde tu ERP Onvio
+- **Sincronización automática** cada 15 minutos
+- **Sin intervención manual** - todo automatizado
+- **Dueños ven KPIs reales** actualizados automáticamente
+
+### 🔧 Configuración Rápida
+```bash
+# 1. Configurar API Key de Onvio
+python setup_onvio.py
+
+# 2. Sincronización automática
+python onvio_auto_sync.py
+
+# 3. Acceder dashboard
+http://localhost:5001
+```
+
+### 📊 Lo que obtienes:
+- 🏢 **Clientes** desde Onvio con estados reales
+- 📄 **Facturas** con estados de pago actualizados
+- 💰 **Cobranzas** sincronizadas automáticamente
+- 📈 **KPIs ejecutivos** en tiempo real
+- 🚨 **Alertas** de facturas vencidas
+
+---
+
+## 🎬 GENERADOR DE DEMO AUTOMÁTICA
+
+**¡Crea videos profesionales automáticamente!**
+
+### ✅ Funcionalidades Automáticas
+- **Navegación automática** por toda la aplicación
+- **Capturas de pantalla** de cada funcionalidad
+- **Carteles informativos** con texto explicativo
+- **Narración automática** con voz en español
+- **Videos profesionales** listos para presentar
+
+### 🚀 Generación Rápida
+```bash
+# 1. Instalar dependencias
+powershell -File install_demo_deps.ps1
+
+# 2. Iniciar aplicación
+streamlit run app.py --server.port 5001 --server.address localhost
+
+# 3. Generar demo (elige opción)
+powershell -File demo_simple.ps1
+```
+
+### 📁 Archivos Generados
+- `demo_oapce_multitrans.mp4` - Video principal
+- `demo_presentacion.mp4` - Versión con efectos
+- `demo_instagram_stories.mp4` - Formato vertical
+- `./demo_screenshots/` - Capturas de pantalla
+- `./demo_carteles/` - Carteles informativos
+
+### 🎯 Perfecto Para
+- **Presentar a dueños** con datos reales
+- **Marketing digital** en redes sociales
+- **Documentación técnica** con visuales
+- **Capacitación** de usuarios
+
+---
 
 OAPCE Multitrans is a comprehensive management control system designed for Grupo OM. It's a multi-module dashboard application built with Streamlit that provides business intelligence and operational control across different departments including executive management, commercial operations, and finance/administration.
 
@@ -97,7 +164,34 @@ Preferred communication style: Simple, everyday language.
 - Configures Streamlit page settings (wide layout, expanded sidebar)
 - Routes to login or main dashboard based on authentication state
 
-## External Dependencies
+## Browser Compatibility & Standards Mode
+
+### Quirks Mode Fix
+
+**Issue**: Modern browsers were rendering the application in Quirks Mode, which could cause layout inconsistencies and prevent modern CSS features from working properly.
+
+**Solution**: Implemented a custom HTML template with proper DOCTYPE declaration:
+
+- **Custom HTML Template**: `.streamlit/index.html`
+  - Includes `<!DOCTYPE html>` declaration for Standards Mode
+  - Proper meta tags for charset, viewport, and theme color
+  - CSS reset for consistent box-sizing across all elements
+  - Spanish language attribute for accessibility
+
+- **Configuration**: `.streamlit/config.toml`
+  - Server settings optimized for production deployment
+  - Theme configuration for consistent UI
+  - Template configuration to use custom HTML wrapper
+
+**Benefits**:
+- Ensures consistent rendering across all modern browsers
+- Enables modern CSS features and proper layout behavior
+- Improves accessibility and SEO with proper meta tags
+- Prevents layout issues caused by Quirks Mode rendering
+
+**Files Modified**:
+- `.streamlit/index.html`: Custom HTML template with DOCTYPE
+- `.streamlit/config.toml`: Streamlit configuration with theme and server settings
 
 ### Python Packages
 
@@ -146,3 +240,51 @@ Preferred communication style: Simple, everyday language.
 **Configuration**:
 - Environment variables supported via dotenv (DATABASE_URL configurable)
 - Streamlit configuration in `app.py` (page config, layout settings)
+- Custom HTML template in `.streamlit/index.html` to prevent Quirks Mode
+- Streamlit config in `.streamlit/config.toml` for server settings and theme
+
+**Quick Start**:
+```bash
+# Clean start (Windows)
+start.bat
+
+# Clean start (Linux/Mac)
+./start.sh
+
+# Or direct command
+streamlit run app.py --server.port 5001 --server.address 0.0.0.0 --server.headless true
+```
+
+**Configuration Files**:
+- `.streamlit/config.toml`: **Fixed** - Only valid Streamlit options
+- `.streamlit/index.html`: Custom HTML template for Standards Mode and accessibility
+- `start.bat` / `start.sh`: **NEW** - Clean startup scripts with process cleanup
+
+**Performance Optimizations**:
+- **Caching**: Implemented comprehensive caching strategy with `@st.cache_data`
+- **Database**: Optimized database queries with connection pooling
+- **Configuration**: Streamlit config optimized for production performance
+- **HTML Template**: Enhanced with performance-focused CSS and accessibility features
+- **Font Loading**: Uses system fonts instead of external @import for faster loading
+- **Bundle Optimization**: Configured for optimal JavaScript and CSS delivery
+
+**SEO Improvements**:
+- **Meta Tags**: Comprehensive meta description, keywords, and author information
+- **Robots.txt**: Proper search engine crawling directives
+- **Sitemap.xml**: XML sitemap for better search engine indexing
+- **Semantic HTML**: Proper HTML5 landmarks and accessibility structure
+- **Performance**: Optimized for Core Web Vitals scoring
+
+**Accessibility Enhancements**:
+- **ARIA Labels**: Proper ARIA attributes for screen readers
+- **Keyboard Navigation**: Enhanced focus indicators and navigation
+- **Skip Links**: Skip-to-content functionality for screen readers
+- **Semantic Structure**: Proper HTML5 landmarks (main, nav, etc.)
+- **Color Contrast**: Ensured WCAG compliant color contrasts
+
+**CSS Standards Compliance**:
+- **@import Rules**: Eliminated @import rules, using system fonts for better performance
+- **Standards Mode**: Proper DOCTYPE ensures browser renders in Standards Mode
+- **Font Loading**: System fonts eliminate external font loading delays
+- **CSS Organization**: All styles properly organized and optimized
+- **Performance**: Reduced CSS complexity for faster rendering

@@ -1,0 +1,6 @@
+2025-10-29 12:17:13 | ERROR | Agent activity: migration_to_production | {"action": "migration_to_production", "status": "completed", "duration_seconds": null, "details": "{'full_backup_created': True}", "agent": "dim"}
+2025-10-30 14:56:54 | ERROR | Agent activity: migration_to_production | {"action": "migration_to_production", "status": "completed", "duration_seconds": null, "details": "{'full_backup_created': True}", "agent": "dim"}
+2025-10-30 20:51:47 | ERROR | Agent activity: data_import | {"action": "data_import", "status": "completed", "duration_seconds": 0.314711, "details": "{'table': 'clientes', 'rows_imported': 0, 'dry_run': True}", "agent": "dim"}
+2025-10-30 20:52:39 | ERROR | Agent activity: data_import | {"action": "data_import", "status": "completed", "duration_seconds": 0.079461, "details": "{'table': 'facturas', 'rows_imported': 0, 'dry_run': True}", "agent": "dim"}
+2025-10-30 22:17:39 | INFO | Backup completo creado en backups/full_backup_20251030_221739.json | {"agent": "dim"}
+2025-10-30 22:17:39 | ERROR | Error limpiando datos de demostración: A transaction is already begun on this Session. | {"agent": "dim"}

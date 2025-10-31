@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Disallow access to sensitive areas
+Disallow: /_stcore/
+Disallow: /_stcore/*
+Disallow: /streamlit/
+Disallow: /streamlit/*
+
+# Allow access to main application
+Allow: /
+Allow: /?*
+
+# Sitemap location
+Sitemap: https://your-domain.com/sitemap.xml
+
+# Crawl delay to be respectful to server
+Crawl-delay: 1

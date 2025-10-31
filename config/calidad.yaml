@@ -1,0 +1,44 @@
+# config/calidad.yaml
+reglas:
+  - id: completitud_campos_obligatorios_clientes
+    nombre: "Completitud de campos obligatorios en Clientes"
+    descripcion: "Verifica que los campos 'nombre' y 'rut' no sean nulos en la tabla de clientes."
+    tipo: "completitud"
+    severidad: "alta"
+    activa: true
+    parametros:
+      tabla: "clientes"
+      campos_obligatorios: ["nombre", "rut"]
+
+  - id: unicidad_rut_clientes
+    nombre: "Unicidad de RUT en Clientes"
+    descripcion: "Verifica que el campo 'rut' sea único en la tabla de clientes."
+    tipo: "unicidad"
+    severidad: "critica"
+    activa: true
+    parametros:
+      tabla: "clientes"
+      campo_unico: "rut"
+
+  - id: rango_monto_facturas
+    nombre: "Rango de monto en Facturas"
+    descripcion: "Verifica que el 'monto_total' de las facturas esté dentro de un rango razonable (0 a 100,000,000)."
+    tipo: "rango"
+    severidad: "media"
+    activa: true
+    parametros:
+      tabla: "facturas"
+      campo: "monto_total"
+      min: 0
+      max: 100000000
+
+  - id: consistencia_estado_facturas
+    nombre: "Consistencia de estado en Facturas"
+    descripcion: "Verifica que el 'estado' de las facturas sea uno de los valores permitidos (pendiente, pagada, vencida, parcial)."
+    tipo: "validez"
+    severidad: "alta"
+    activa: true
+    parametros:
+      tabla: "facturas"
+      campo: "estado"
+      valores_permitidos: ["pendiente", "pagada", "vencida", "parcial"]

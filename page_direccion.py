@@ -10,28 +10,99 @@ from datetime import datetime, timedelta
 def show_management_dashboard():
     st.title("📈 Dirección General")
     st.markdown("### Tablero de Control Ejecutivo")
-    
+
     db = get_db()
-    
+
     try:
         show_executive_kpis(db)
-        
+
         st.markdown("---")
-        
+
         col1, col2 = st.columns(2)
-        
+
         with col1:
             show_financial_summary(db)
-        
+
         with col2:
             show_commercial_summary(db)
-        
+
         st.markdown("---")
-        
+
         show_trends_analysis(db)
-        
+
+        st.markdown("---")
+
+        # AGENTES INTELIGENTES INTEGRADOS EN DIRECCIÓN GENERAL
+        show_strategic_ai_agents()
+
     finally:
         db.close()
+
+def show_strategic_ai_agents():
+    """Agentes IA estratégicos para Dirección General"""
+    st.markdown("## 🤖 **Agentes IA para Apoyo Ejecutivo**")
+    st.markdown("**Herramientas inteligentes específicamente para toma de decisiones estratégicas**")
+
+    with st.expander("🔮 PME (Modelos Predictivos) - Forecasting Estratégico", expanded=False):
+        st.markdown("**¿Qué hace?** Predice tendencias del negocio y anticipa escenarios futuros")
+        st.markdown("**Beneficio:** Toma de decisiones basada en proyecciones inteligentes")
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.markdown("**Casos de uso principales:**")
+            st.markdown("- Proyección de ingresos trimestrales")
+            st.markdown("- Análisis de crecimiento del mercado")
+            st.markdown("- Predicción de demanda por temporada")
+        with col2:
+            if st.button("🚀 Ejecutar PME - Forecasting", key="management_pme_forecasting", use_container_width=True):
+                from agents_ui import show_predictive_models_page
+                st.markdown("---")
+                st.info("Abierto en nueva sección de Agentes IA")
+                # NOTA: La función se llamaría desde el módulo Agentes IA
+
+    with st.expander("💡 PA (Asesor Prescriptivo) - Recomendaciones Estratégicas", expanded=False):
+        st.markdown("**¿Qué hace?** Genera acciones concretas con máximo impacto estratégico")
+        st.markdown("**Beneficio:** Guía objetiva para crecimiento sostenible")
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.markdown("**Casos de uso principales:**")
+            st.markdown("- Optimización de portfolio de productos")
+            st.markdown("- Mejora de estrategia de precios")
+            st.markdown("- Identificación de oportunidades de mercado")
+        with col2:
+            if st.button("🚀 Ejecutar PA - Recomendaciones", key="management_pa_strategy", use_container_width=True):
+                from agents_ui import show_prescriptive_advisor_page
+                st.markdown("---")
+                st.info("Abierto en nueva sección de Agentes IA")
+
+    with st.expander("📊 SSBF (BI Autoservicio) - Dashboards Estratégicos", expanded=False):
+        st.markdown("**¿Qué hace?** Crea visualizaciones personalizadas sin conocimientos técnicos")
+        st.markdown("**Beneficio:** Insights estratégicos a la medida del equipo ejecutivo")
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.markdown("**Casos de uso principales:**")
+            st.markdown("- Dashboard ejecutivo mensual customizable")
+            st.markdown("- KPIs estratégicos con alerts automáticos")
+            st.markdown("- Reportes stakeholder perfectamente visualizados")
+        with col2:
+            if st.button("🚀 Ejecutar SSBF - Dashboard Ejecutivo", key="management_ssbf_executive", use_container_width=True):
+                from agents_ui import show_ssbf_page
+                st.markdown("---")
+                st.info("Abierto en nueva sección de Agentes IA")
+
+    with st.expander("🚨 AD (Detector de Anomalías) - Alertas Estratégicas", expanded=False):
+        st.markdown("**¿Qué hace?** Identifica irregularidades críticas en KPIs estratégicos")
+        st.markdown("**Beneficio:** Riesgo reducido por acción preventiva y oportuna")
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.markdown("**Casos de uso principales:**")
+            st.markdown("- Alertas cuando ventas bajan anormalmente")
+            st.markdown("- Detección de problemas en cash flow")
+            st.markdown("- Irregularidades financieras automáticas")
+        with col2:
+            if st.button("🚀 Ejecutar AD - Monitoreo Ejecutivo", key="management_ad_risk", use_container_width=True):
+                from agents_ui import show_anomaly_detector_page
+                st.markdown("---")
+                st.info("Abierto en nueva sección de Agentes IA")
 
 def show_executive_kpis(db):
     st.subheader("KPIs Principales")
@@ -411,7 +482,7 @@ def show_alerts(db):
         alerts.append({
             'Tipo': '🟡 Advertencia',
             'Mensaje': f'{clientes_sin_actividad} clientes sin avance en más de 60 días',
-            'Acción': 'Reactiv ar seguimiento comercial'
+            'Acción': 'Reactivar seguimiento comercial'
         })
     
     movimientos = db.query(MovimientoCaja).all()
@@ -429,15 +500,7 @@ def show_alerts(db):
         st.success("✅ No hay alertas en este momento. Todos los indicadores están dentro de los parámetros normales.")
     else:
         for alert in alerts:
-            with st.container():
-                col1, col2, col3 = st.columns([1, 3, 2])
-                with col1:
-                    st.markdown(f"**{alert['Tipo']}**")
-                with col2:
-                    st.markdown(alert['Mensaje'])
-                with col3:
-                    st.markdown(f"*{alert['Acción']}*")
-                st.markdown("---")
+            st.warning(f"**{alert['Tipo']}**: {alert['Mensaje']}. *{alert['Acción']}*")
 
 if __name__ == "__main__":
     show_management_dashboard()

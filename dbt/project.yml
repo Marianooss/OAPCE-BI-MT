@@ -1,0 +1,37 @@
+name: 'oapce_bi'
+version: '1.0.0'
+config-version: 2
+
+profile: 'oapce_bi'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  oapce_bi:
+    staging:
+      materialized: view
+      schema: staging
+    marts:
+      materialized: table
+      schema: marts
+
+seeds:
+  oapce_bi:
+    schema: seeds</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>
+</parameter>

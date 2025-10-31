@@ -1,0 +1,22 @@
+{
+  "backup_date": "20251030_145654",
+  "migration_purpose": "demo_to_production",
+  "tables": {
+    "clientes": {
+      "record_count": 0,
+      "data": []
+    },
+    "facturas": {
+      "record_count": 0,
+      "data": []
+    },
+    "vendedores": {
+      "record_count": 0,
+      "data": []
+    },
+    "actividades_venta": {
+      "record_count": 0,
+      "data": []
+    }
+  }
+}
