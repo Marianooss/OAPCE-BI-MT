@@ -72,4 +72,3 @@ for idx, row in anomalies.iterrows():
         if st.button("Actualizar Estado", key=f"update_{row['id']}"):
             execute_update("UPDATE anomalies SET status = %s WHERE id = %s", (new_status, row['id']))
             st.success("Estado actualizado")
-            st.rerun()

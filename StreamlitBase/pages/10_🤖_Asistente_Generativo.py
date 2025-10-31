@@ -32,4 +32,3 @@ if prompt:
     st.session_state.messages.append({"role": "assistant", "content": response})
     st.chat_message("assistant").write(response)
     st.bar_chart({"Norte": 500, "Sur": 300})
-    st.rerun()
