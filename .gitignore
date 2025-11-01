@@ -60,3 +60,6 @@ demo_*/
 !pyproject.toml
 !.streamlit/config.toml
 README.md
+
+# Streamlit secrets (contains sensitive data)
+.streamlit/secrets.toml
