@@ -30,7 +30,6 @@ def login_page():
                         "rol": user.rol.value
                     }
                     st.success(f"Bienvenido, {user.nombre}!")
-                    st.rerun()
                 else:
                     st.error("Email o contraseña incorrectos")
             else:
@@ -47,7 +46,6 @@ def login_page():
 def logout():
     st.session_state.authenticated = False
     st.session_state.user = None
-    st.rerun()
 
 def require_auth(func):
     def wrapper(*args, **kwargs):

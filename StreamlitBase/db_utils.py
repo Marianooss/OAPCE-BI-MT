@@ -4,7 +4,19 @@ import pandas as pd
 from contextlib import contextmanager
 
 def get_db_connection():
-    return psycopg2.connect(os.environ['DATABASE_URL'])
+    db_url = None
+    # Check if running in Streamlit Cloud and secrets are configured
+    if hasattr(st, 'secrets') and "DATABASE_URL" in st.secrets:
+        db_url = st.secrets["DATABASE_URL"]
+    else:
+        # Fallback to local environment variable for local development
+        db_url = os.environ.get('DATABASE_URL')
+
+    if not db_url:
+        st.error("La URL de la base de datos no está configurada. Por favor, configúrala en los secretos de Streamlit o como una variable de entorno local.")
+        st.stop()
+
+    return psycopg2.connect(db_url)
 
 @contextmanager
 def get_connection():
