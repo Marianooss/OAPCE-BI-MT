@@ -1,6 +1,5 @@
 import streamlit as st
 import os
-import psycopg2
 import pandas as pd
 from contextlib import contextmanager
 
@@ -17,7 +16,18 @@ def get_db_connection():
         st.error("La URL de la base de datos no está configurada. Por favor, configúrala en los secretos de Streamlit o como una variable de entorno local.")
         st.stop()
 
-    return psycopg2.connect(db_url)
+    # Detect database type and use appropriate driver
+    if db_url.startswith('sqlite://'):
+        import sqlite3
+        # Extract path from sqlite:// URL
+        db_path = db_url.replace('sqlite:///', '')
+        return sqlite3.connect(db_path)
+    elif db_url.startswith('postgresql://'):
+        import psycopg2
+        return psycopg2.connect(db_url)
+    else:
+        st.error(f"Tipo de base de datos no soportado en URL: {db_url}")
+        st.stop()
 
 @contextmanager
 def get_connection():
