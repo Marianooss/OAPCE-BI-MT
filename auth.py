@@ -13,12 +13,12 @@ def login_page():
     col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
-        st.image("Bioss logo.png", use_container_width=True)
+        st.image("../Bioss logo.png", width='stretch')
 
         email = st.text_input("Email", placeholder="usuario@grupoom.com", autocomplete="username")
         password = st.text_input("Password", type="password", placeholder="Ingrese su contraseña", autocomplete="current-password")
 
-        if st.button("Ingresar", use_container_width=True):
+        if st.button("Ingresar"):
             if email and password:
                 user = authenticate_user(email, password)
                 if user:

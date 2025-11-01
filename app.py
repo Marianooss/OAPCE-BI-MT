@@ -114,7 +114,7 @@ def main():
     sidebar_info = get_sidebar_info(user)
 
     with st.sidebar:
-        st.image("Bioss logo.png", use_container_width=True)
+        st.image("Bioss logo.png")
         st.title(sidebar_info["title"])
         st.markdown(sidebar_info["subtitle"])
 
@@ -137,7 +137,7 @@ def main():
 
         st.markdown("---")
 
-        if st.button("🚪 Cerrar Sesión", use_container_width=True):
+        if st.button("🚪 Cerrar Sesión"):
             logout()
 
         st.markdown("---")
