@@ -13,7 +13,7 @@ def login_page():
     col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
-        st.image(r"C:\Users\user\Desktop\OAPCE BI MT\Bioss logo.png", use_container_width=True)
+        st.image("Bioss logo.png", use_container_width=True)
 
         email = st.text_input("Email", placeholder="usuario@grupoom.com", autocomplete="username")
         password = st.text_input("Password", type="password", placeholder="Ingrese su contraseña", autocomplete="current-password")
