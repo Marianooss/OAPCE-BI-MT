@@ -1,12 +1,2 @@
-[theme]
-primaryColor="#007bff"
-backgroundColor="#FFFFFF"
-secondaryBackgroundColor="#f0f2f6"
-textColor="#31333F"
-font="sans serif"
-
 [server]
-# Enable Streamlit's built-in dark mode
-# This setting is usually handled by the user's browser/system preferences
-# but can be explicitly set if needed.
-# client.toolbarMode = "minimal" # Example of another client setting
+fileWatcherType = "none"
