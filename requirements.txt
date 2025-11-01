@@ -24,6 +24,7 @@ python-multipart>=0.0.6
 
 # HTTP client for external integrations
 requests>=2.31.0
+bcrypt>=4.1.0
 
 # Data generation dependencies
 Faker>=20.0.0
